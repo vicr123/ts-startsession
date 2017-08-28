@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QFile>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {
@@ -12,12 +13,19 @@ int main(int argc, char *argv[])
     qputenv("QT_QPA_PLATFORMTHEME", "ts");
 
     QApplication a(argc, argv);
+    a.setOrganizationName("theSuite");
+    a.setApplicationName("ts-startsession");
     a.setQuitOnLastWindowClosed(false);
+
+    QSettings settings;
 
     bool blueprint = false;
     if (a.arguments().contains("--blueprint")) {
         blueprint = true;
     }
+
+    //Set DPI
+    QProcess::execute("xrandr --dpi " + QString::number(settings.value("screen/dpi", 96).toInt()));
 
     QProcess* tsProcess = new QProcess();
     if (blueprint) {
